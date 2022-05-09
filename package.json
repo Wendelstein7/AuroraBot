@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "A community-built Discord bot to provide services in the Minecraft Computer Mods Discord guild.",
   "main": "bot.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Wendelstein7/AuroraBot.git"
@@ -20,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/Wendelstein7/AuroraBot/issues"
   },
-  "homepage": "https://github.com/Wendelstein7/AuroraBot#readme"
+  "homepage": "https://github.com/Wendelstein7/AuroraBot#readme",
+  "dependencies": {
+    "@discordjs/builders": "^0.13.0",
+    "@discordjs/rest": "^0.4.1",
+    "discord-api-types": "^0.32.1",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0"
+  }
 }

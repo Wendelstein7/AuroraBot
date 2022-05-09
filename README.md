@@ -3,6 +3,8 @@
 
 Not a member of the guild yet? Join the [Minecraft Computer Mods Discord guild](https://discord.gg/H2UyJXe).
 
+https://discord.com/api/oauth2/authorize?client_id=973265371777892404&permissions=1505587489862&scope=bot%20applications.commands
+
 ## Development
 This Discord bot is built with [node.js](https://nodejs.org/en/) using the [discord.js](https://discord.js.org/#/) framework.
 
