@@ -13,8 +13,9 @@ const commandFiles = fs
   .filter((file) => file.endsWith(".js"));
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
-  // Set a new item in the Collection
-  // With the key as the command name and the value as the exported module
+
+  if (!command.enabled) continue;
+
   client.commands.set(command.data.name, command);
 }
 
@@ -39,7 +40,7 @@ client.on("interactionCreate", async (interaction) => {
 
   const command = client.commands.get(interaction.commandName);
 
-  if (!command || !command.enabled) return;
+  if (!command) return;
 
   try {
     await command.execute(interaction);
