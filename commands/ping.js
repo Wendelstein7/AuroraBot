@@ -16,12 +16,12 @@ module.exports = {
     .setName("ping")
     .setDescription("Replies with Pong!"),
   async execute(interaction) {
-    var start = new Date().getTime();
+    let start = new Date().getTime();
 
     await interaction.reply({ content: "Pong!", ephemeral: true });
 
-    var pingMilliseconds = Math.round(new Date().getTime() - start);
-    var emoji = emojis.find((e) => pingMilliseconds < e.ms).emoji;
+    let pingMilliseconds = Math.round(new Date().getTime() - start);
+    let emoji = emojis.find((e) => pingMilliseconds < e.ms).emoji;
 
     await interaction.editReply({
       content: `Pong! *(took ${pingMilliseconds} ms ${emoji})*`,
