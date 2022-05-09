@@ -7,6 +7,14 @@ Not a member of the guild yet? Join the [Minecraft Computer Mods Discord guild](
 # Development
 This Discord bot is built with [node.js](https://nodejs.org/en/) using the [discord.js](https://discord.js.org/#/) framework.
 
+## Repository folder structure
+The following folder structure is expected:
+- `assets/` - Contains all the assets such as the logo and other media used for the bot.
+- `commands/` - Contains all the slash-command logic the bot uses, with each file containing seperate functionality.
+- `events/` - Contains all the event logic the bot uses, with each file containing seperate functionality.
+- `bot.js` - The main file for the bot, which is run to start the bot.
+- `deploy_commands.js` - A script for pushing slash-commands to Discord.
+
 ## Required software
 - You will need **node.js** and **npm**. For a POSIX-compliant environment, I recommend [nvm](https://github.com/nvm-sh/nvm) to install these, if you do not have them already installed.
 - A modern IDE such as [Visual Studio Code](https://code.visualstudio.com/) is recommended aswell.
