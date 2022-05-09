@@ -1,0 +1,24 @@
+{
+  "name": "aurorabot",
+  "version": "1.0.0",
+  "description": "A community-built Discord bot to provide services in the Minecraft Computer Mods Discord guild.",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wendelstein7/AuroraBot.git"
+  },
+  "keywords": [
+    "Aurora",
+    "Discord",
+    "Bot"
+  ],
+  "author": "Wendelstein7",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Wendelstein7/AuroraBot/issues"
+  },
+  "homepage": "https://github.com/Wendelstein7/AuroraBot#readme"
+}
