@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "A community-built Discord bot to provide services in the Minecraft Computer Mods Discord guild.",
   "main": "bot.js",
+  "scripts": {
+    "deploy": "node deploy_commands.js",
+    "bot": "node bot.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Wendelstein7/AuroraBot.git"
