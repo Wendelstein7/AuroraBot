@@ -33,6 +33,13 @@ If you have not run the bot before OR if you have modified slash-commands, you n
 
 Then you can start the bot by executing `npm run bot` in the root directory of the repository. The bot should appear online in Discord shortly, and you can try to use it by typing the `/ping` command.
 
+### Docker
+Should you wish to run the bot in a docker container, you can use the following commands:
+```sh
+docker build -t aurorabot .
+docker run -d --name aurora_bot aurorabot
+```
+
 
 ## TL;DR
 ```sh

@@ -10,4 +10,4 @@ RUN npm install
 COPY . /usr/src/bot
 
 # Start the bot.
-CMD ["npm", "run bot"]
+CMD ["node", "."]
