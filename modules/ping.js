@@ -1,5 +1,9 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
+const dayjs = require("dayjs");
+var relativeTime = require("dayjs/plugin/relativeTime");
+dayjs.extend(relativeTime);
+
 const emojis = [
   { ms: 200, emoji: ":grin:" },
   { ms: 350, emoji: ":relaxed:" },
@@ -9,6 +13,8 @@ const emojis = [
   { ms: 2000, emoji: ":cry:" },
   { ms: Math.max, emoji: ":confounded:" },
 ];
+
+const start = Date.now();
 
 module.exports = {
   enabled: true,
@@ -25,13 +31,18 @@ module.exports = {
       async execute(interaction) {
         let start = new Date().getTime();
 
-        await interaction.reply({ content: "Pong!", ephemeral: true });
+        await interaction.reply({
+          content: `Pong from bot!\nBot started ${dayjs(start).fromNow()}`,
+          ephemeral: true,
+        });
 
         let pingMilliseconds = Math.round(new Date().getTime() - start);
         let emoji = emojis.find((e) => pingMilliseconds < e.ms).emoji;
 
         await interaction.editReply({
-          content: `Pong! *(took ${pingMilliseconds} ms ${emoji})*`,
+          content: `Pong from bot!\nBot started ${dayjs(
+            start
+          ).fromNow()}\n*(took ${pingMilliseconds} ms ${emoji})*`,
           ephemeral: true,
         });
       },
