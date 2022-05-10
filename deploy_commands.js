@@ -5,15 +5,21 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 
-const commandFiles = fs
-  .readdirSync("./commands")
+const commands = [];
+
+// Load modules from the modules folder
+const moduleFiles = fs
+  .readdirSync("./modules")
   .filter((file) => file.endsWith(".js"));
 
-const commands = [];
-for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
+for (const file of moduleFiles) {
+  const module = require(`./modules/${file}`);
 
-  if (command.enabled) commands.push(command.data.toJSON());
+  if (!module.enabled) continue;
+
+  for (const command of module.commands) {
+    commands.push(command.data.toJSON());
+  }
 }
 
 const rest = new REST({ version: "9" }).setToken(process.env.DISCORD_BOT_TOKEN);
@@ -26,5 +32,9 @@ rest
     ),
     { body: commands }
   )
-  .then(() => console.log("Successfully registered application commands."))
+  .then(() =>
+    console.log(
+      `Successfully registered ${commands.length} application commands.`
+    )
+  )
   .catch(console.error);

@@ -10,8 +10,7 @@ This Discord bot is built with [node.js](https://nodejs.org/en/) using the [disc
 ## Repository folder structure
 The following folder structure is expected:
 - `assets/` - Contains all the assets such as the logo and other media used for the bot.
-- `commands/` - Contains all the slash-command logic the bot uses, with each file containing seperate functionality.
-- `events/` - Contains all the event logic the bot uses, with each file containing seperate functionality.
+- `modules/` - Contains all the logic the bot uses such as events and slash-commands, with each file containing seperate functionality.
 - `bot.js` - The main file for the bot, which is run to start the bot.
 - `deploy_commands.js` - A script for pushing slash-commands to Discord.
 

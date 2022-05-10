@@ -5,34 +5,58 @@ const { Client, Collection, Intents } = require("discord.js");
 
 // Create a Discord client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-
-// Load commands from the commands directory
 client.commands = new Collection();
-const commandFiles = fs
-  .readdirSync("./commands")
+
+// Load modules from the modules folder
+const moduleFiles = fs
+  .readdirSync("./modules")
   .filter((file) => file.endsWith(".js"));
-for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
 
-  if (!command.enabled) continue;
+for (const file of moduleFiles) {
+  const module = require(`./modules/${file}`);
 
-  client.commands.set(command.data.name, command);
-}
+  if (!module.enabled) continue;
 
-const eventFiles = fs
-  .readdirSync("./events")
-  .filter((file) => file.endsWith(".js"));
-for (const file of eventFiles) {
-  const event = require(`./events/${file}`);
+  for (const command of module.commands) {
+    client.commands.set(command.data.name, command);
+  }
 
-  if (!event.enabled) continue;
-
-  if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args));
-  } else {
-    client.on(event.name, (...args) => event.execute(...args));
+  for (const event of module.events) {
+    if (event.once) {
+      client.once(event.name, (...args) => event.execute(...args));
+    } else {
+      client.on(event.name, (...args) => event.execute(...args));
+    }
   }
 }
+
+// // Load commands from the commands directory
+// client.commands = new Collection();
+// const commandFiles = fs
+//   .readdirSync("./commands")
+//   .filter((file) => file.endsWith(".js"));
+// for (const file of commandFiles) {
+//   const command = require(`./commands/${file}`);
+
+//   if (!command.enabled) continue;
+
+//   client.commands.set(command.data.name, command);
+// }
+
+// const eventFiles = fs
+//   .readdirSync("./events")
+//   .filter((file) => file.endsWith(".js"));
+// for (const file of eventFiles) {
+//   const event = require(`./events/${file}`);
+
+//   if (!event.enabled) continue;
+
+//   if (event.once) {
+//     client.once(event.name, (...args) => event.execute(...args));
+//   } else {
+//     client.on(event.name, (...args) => event.execute(...args));
+//   }
+// }
 
 // Bot interaction logic
 client.on("interactionCreate", async (interaction) => {
@@ -46,6 +70,7 @@ client.on("interactionCreate", async (interaction) => {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
+
     await interaction.reply({
       content: "There was an error while executing this command!",
       ephemeral: true,
