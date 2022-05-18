@@ -4,7 +4,7 @@ const fs = require("node:fs");
 const { Client, Collection, Intents } = require("discord.js");
 
 // Create a Discord client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 client.commands = new Collection();
 
 // Load modules from the modules folder
@@ -23,9 +23,9 @@ for (const file of moduleFiles) {
 
   for (const event of module.events) {
     if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args));
+      client.once(event.name, (...args) => event.execute(...args, client)); // modules have to have access to the client in some way
     } else {
-      client.on(event.name, (...args) => event.execute(...args));
+      client.on(event.name, (...args) => event.execute(...args, client));
     }
   }
 }
