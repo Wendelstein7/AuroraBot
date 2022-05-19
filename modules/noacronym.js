@@ -162,11 +162,12 @@ module.exports = {
       name: "messageCreate",
       once: false,
       /**
+       * @param { import("discord.js").Message } message
        * @param { import("discord.js").Client } client
        */
       async execute(message, client) {
 
-        if (client.user.id !== message.author.id && message.content.includes("LUA") && !ratelimited(completelyLocked, message.author.id, limit)) {
+        if (!message.author.bot && client.user.id !== message.author.id && message.content.includes("LUA") && !ratelimited(completelyLocked, message.author.id, limit)) {
           let channel = /** @type {import("discord.js").TextChannel} */ await client.channels.fetch(message.channelId);
 
           if(spamCounter[message.author.id] === undefined) {
@@ -179,14 +180,19 @@ module.exports = {
             spamCounterT = setTimeout(drownSpam, 1000);
           }
 
-          if (spamCounter[message.author.id] > 3) {
+          if (message.content === "don't talk to me until I had my LUA") {
+            ratelimited(completelyLocked, message.author.id, limit, true);
+
+            await channel.send(replying(message.id, "Oh come on... you actually think you feel smart enough to repeat what the Pull Request said? Really? Do you actually feel enjoyment on doing these things? It must've be fun to live full of cascades of endless enjoyments \"OoOOoH I'm gonna repeat what the Pull Request said!\", these must be these moments where you just bolt off the couch with a surprised face while telling \"REALLLLY?????\" because you were as uncreative as repeating what the Pull Request said"));
+          }
+          else if (spamCounter[message.author.id] > 3) {
             ratelimited(completelyLocked, message.author.id, limit, true);
 
             await channel.send(replying(message.id, choice(spammed)));
           }
           else if (ratelimited(firstPayloadLocked, message.author.id, limit)) {
             ratelimited(completelyLocked, message.author.id, limit, true);
-
+          
             await channel.send(replying(message.id, choice(repetitive)));
           }
           else if (Math.random() > 0.7) {
