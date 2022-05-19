@@ -179,7 +179,7 @@ module.exports = {
             spamCounterT = setTimeout(drownSpam, 1000);
           }
 
-          if (spamCounter[message.author.id] > 5) {
+          if (spamCounter[message.author.id] > 3) {
             ratelimited(completelyLocked, message.author.id, limit, true);
 
             await channel.send(replying(message.id, choice(spammed)));
@@ -189,7 +189,7 @@ module.exports = {
 
             await channel.send(replying(message.id, choice(repetitive)));
           }
-          else if (Math.random() > 0.95) {
+          else if (Math.random() > 0.7) {
             ratelimited(firstPayloadLocked, message.author.id, limit, true);  // ratelimits are done first to prevent race conditions
 
             await channel.send(replying(message.id, choice(available)));
