@@ -23,9 +23,9 @@ for (const file of moduleFiles) {
 
   for (const event of module.events) {
     if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args, client)); // modules have to have access to the client in some way
+      client.once(event.name, (...args) => event.execute(...args));
     } else {
-      client.on(event.name, (...args) => event.execute(...args, client));
+      client.on(event.name, (...args) => event.execute(...args));
     }
   }
 }
