@@ -1,3 +1,6 @@
+[![Dependency Review](https://github.com/Wendelstein7/AuroraBot/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/Wendelstein7/AuroraBot/actions/workflows/dependency-review.yml)
+[![CodeQL](https://github.com/Wendelstein7/AuroraBot/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Wendelstein7/AuroraBot/actions/workflows/codeql-analysis.yml)
+
 # Aurora Discord Bot
 *A community-built Discord bot to provide services in the Minecraft Computer Mods Discord guild.*
 
