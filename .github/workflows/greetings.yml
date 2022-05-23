@@ -1,0 +1,17 @@
+name: Greetings
+
+#on: [pull_request_target, issues]
+on: [pull_request_target]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+#        issue-message: 'Message that will be displayed on users first issue'
+        pr-message: 'Thank you for your pull-request! It looks like this is your first PR to AuroraBot. That is awesome :D ! Soon, the maintainers should take a look at your work. In the meantime, to increase chances of having your PR accepted, please make sure that the PR contains an explaination of what your PR contains, make sure your code is formatted properly, make sure that everything is working and tested with your own Discord instance and make sure that there is little room for abuse by users. Thanks!'
