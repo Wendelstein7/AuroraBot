@@ -24,6 +24,14 @@ module.exports = {
 
       async execute(interaction) {
 
+        if(!interaction.memberPermissions.has("MANAGE_MESSAGES")) {
+          await interaction.reply({
+            content: `You do not have permissions to use this command!`,
+            ephemeral: true
+          });
+          return;
+        }
+
         let channel = interaction.channel;
 
         if (channel.type !== "GUILD_PUBLIC_THREAD") {
