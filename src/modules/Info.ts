@@ -1,50 +1,38 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
-const { MessageEmbed } = require("discord.js");
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { CommandError } from "../CommandHandler.js";
+import { Module } from "../Module.js";
 
-const dayjs = require("dayjs");
-var relativeTime = require("dayjs/plugin/relativeTime");
-dayjs.extend(relativeTime);
+import dayjs from "dayjs";
+import dayjsRelativeTime from "dayjs/plugin/relativeTime.js";
+dayjs.extend(dayjsRelativeTime);
 
-const premiumTiers = {
-  NONE: 0,
-  TIER_1: 1,
-  TIER_2: 2,
-  TIER_3: 3,
-};
+export default class Info extends Module {
+  name = "Info";
+  description = "This module allows querying various information about guilds and their members.";
 
-module.exports = {
-  enabled: true,
-
-  name: "Info",
-  description:
-    "This module allows querying various information about guilds and their members.",
-
-  commands: [
-    {
+  async start() {
+    // /guildinfo
+    this.bot.registerCommand({
       data: new SlashCommandBuilder()
         .setName("guildinfo")
         .setDescription("Retrieves information about the current guild.")
-        .addBooleanOption((option) =>
-          option
-            .setName("visible")
-            .setDescription(
-              "Whether or not the reply should be visible to everyone in the channel."
-            )
-        ),
+        .addBooleanOption(opt => opt
+          .setName("visible")
+          .setDescription("Whether the reply should be visible to everyone in the channel.")),
 
       async execute(interaction) {
-        const guild = await interaction.guild.fetch();
-        const preview = await interaction.guild.fetchPreview();
-        if (guild.emojis) await guild.emojis.fetch();
-        if (guild.stickers) await guild.stickers.fetch();
+        const { guild: baseGuild } = interaction;
+        if (!baseGuild) throw new CommandError("Must be ran in a guild.");
 
-        const embed = new MessageEmbed()
+        const [guild, preview] = await Promise.all([baseGuild.fetch(), baseGuild.fetchPreview()]);
+
+        const embed = new EmbedBuilder()
           .setTitle("Guild information")
           .setDescription(`About **${guild.name}** (${guild.nameAcronym})`)
           .setThumbnail(guild.iconURL())
-          .setColor(0xffffff)
+          .setColor(0xFFFFFF)
           .setImage(guild.bannerURL() ?? guild.splashURL())
-          .addFields(
+          .addFields([
             {
               name: "Description",
               value: preview.description ?? "_none_",
@@ -52,7 +40,7 @@ module.exports = {
             },
             {
               name: "Created",
-              value: `${guild.createdAt.toLocaleDateString("en-uk", {
+              value: `${guild.createdAt.toLocaleDateString("en-GB", {
                 month: "long",
                 year: "numeric",
                 day: "numeric",
@@ -63,18 +51,13 @@ module.exports = {
             },
             {
               name: "Members",
-              value: `Total: ${
-                guild.memberCount.toString() ?? "_unknown_"
-              }\nPresent: ${
-                guild.approximatePresenceCount.toString() ?? "_unknown_"
-              }`,
+              value: `Total: ${guild.memberCount.toString() ?? "_unknown_"}\n` +
+                `Present: ${guild.approximatePresenceCount?.toString() ?? "_unknown_"}`,
               inline: true,
             },
             {
               name: "Nitro",
-              value: `Tier ${premiumTiers[guild.premiumTier]} (boosted ${
-                guild.premiumSubscriptionCount
-              } times)`,
+              value: `Tier ${guild.premiumTier} (boosted ${guild.premiumSubscriptionCount} times)`,
               inline: true,
             },
             {
@@ -109,40 +92,36 @@ module.exports = {
               value: `\`${guild.id}\``,
               inline: true,
             }
-          );
+          ]);
 
         await interaction.reply({
           embeds: [embed],
           ephemeral: !interaction.options.getBoolean("visible"),
         });
-      },
-    },
-    {
+      }
+    });
+
+    // /userinfo
+    this.bot.registerCommand({
       data: new SlashCommandBuilder()
         .setName("userinfo")
-        .setDescription(
-          "Retrieves information about yourself or another user in this guild."
-        )
-        .addUserOption((option) =>
-          option
-            .setName("user")
-            .setDescription("The user to retrieve information about.")
-        )
-        .addBooleanOption((option) =>
-          option
-            .setName("visible")
-            .setDescription(
-              "Whether or not the reply should be visible to everyone in the channel."
-            )
-        ),
+        .setDescription("Retrieves information about yourself or another user in this guild.")
+        .addUserOption(opt => opt
+          .setName("user")
+          .setDescription("The user to retrieve information about.")
+          .setRequired(true))
+        .addBooleanOption(opt => opt
+          .setName("visible")
+          .setDescription("Whether the reply should be visible to everyone in the channel.")),
 
       async execute(interaction) {
-        const user = await (
-          interaction.options.getUser("user") || interaction.user
-        ).fetch();
-        const member = await interaction.guild.members.fetch(user);
+        const user = interaction.options.getUser("user");
+        if (!user) throw new CommandError("User not found.");
+        if (!interaction.guild) throw new CommandError("Must be ran in a guild.");
 
-        const embed = new MessageEmbed()
+        const member = await interaction.guild.members.fetch(user.id);
+
+        const embed = new EmbedBuilder()
           .setTitle("User information")
           .setDescription(`About <@${user.id}>`)
           .setThumbnail(user.displayAvatarURL())
@@ -150,7 +129,7 @@ module.exports = {
           .addFields(
             {
               name: "Account created",
-              value: `${user.createdAt.toLocaleDateString("en-uk", {
+              value: `${user.createdAt.toLocaleDateString("en-GB", {
                 month: "long",
                 year: "numeric",
                 day: "numeric",
@@ -161,28 +140,28 @@ module.exports = {
             },
             {
               name: "Joined guild",
-              value: `${member.joinedAt.toLocaleDateString("en-uk", {
+              value: member.joinedAt ? `${member.joinedAt.toLocaleDateString("en-GB", {
                 month: "long",
                 year: "numeric",
                 day: "numeric",
                 hour: "numeric",
                 minute: "numeric",
-              })}\n(${dayjs(member.joinedAt).fromNow()})`,
+              })}\n(${dayjs(member.joinedAt).fromNow()})` : "_none_",
               inline: true,
             },
             {
               name: "Nitro boosting",
               value: member.premiumSince
                 ? `Yes, since ${member.premiumSince.toLocaleDateString(
-                    "en-uk",
-                    {
-                      month: "long",
-                      year: "numeric",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                    }
-                  )}\n(${dayjs(member.premiumSince).fromNow()})`
+                  "en-GB",
+                  {
+                    month: "long",
+                    year: "numeric",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  }
+                )}\n(${dayjs(member.premiumSince).fromNow()})`
                 : "No",
               inline: true,
             },
@@ -212,9 +191,7 @@ module.exports = {
           embeds: [embed],
           ephemeral: !interaction.options.getBoolean("visible"),
         });
-      },
-    },
-  ],
-
-  events: [],
-};
+      }
+    });
+  }
+}

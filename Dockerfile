@@ -1,13 +1,25 @@
-FROM node:latest
+# Build
+FROM node:20-alpine AS base
 
-# Create the bot's directory
-RUN mkdir -p /usr/src/bot
-WORKDIR /usr/src/bot
+RUN apk add ca-certificates make g++
 
-COPY package.json /usr/src/bot
-RUN npm install
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-COPY . /usr/src/bot
+WORKDIR /app
+COPY . .
 
-# Start the bot.
-CMD ["node", "."]
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run build
+
+FROM base
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
+EXPOSE 46009
+ENV NODE_ENV=production
+CMD ["node", "dist/index.js"]

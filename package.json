@@ -2,10 +2,16 @@
   "name": "aurorabot",
   "version": "1.0.0",
   "description": "A community-built Discord bot to provide services in the Minecraft Computer Mods Discord guild.",
-  "main": "bot.js",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "deploy": "node deploy_commands.js",
-    "bot": "node bot.js"
+    "build:bot": "cross-env NODE_ENV=production && tsc -p tsconfig.json",
+    "build": "pnpm clean && pnpm build:bot",
+    "clean": "rimraf dist",
+    "dev": "cross-env NODE_ENV=development && tsx src/index.ts",
+    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint:codegen": "eslint --fix src/modules.ts || exit 0",
+    "preinstall": "npx only-allow pnpm"
   },
   "repository": {
     "type": "git",
@@ -23,11 +29,28 @@
   },
   "homepage": "https://github.com/Wendelstein7/AuroraBot#readme",
   "dependencies": {
-    "@discordjs/builders": "^0.13.0",
-    "@discordjs/rest": "^0.4.1",
-    "dayjs": "^1.11.2",
-    "discord-api-types": "^0.32.1",
-    "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0"
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
+    "batching-toposort": "^1.2.0",
+    "dayjs": "^1.11.10",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-codegen": "0.27.0-2",
+    "eslint-plugin-tsdoc": "^0.2.17",
+    "p-queue": "^8.0.1",
+    "prettier": "^3.2.5",
+    "why-is-node-running": "^2.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "cross-env": "^7.0.3",
+    "rimraf": "^5.0.5",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

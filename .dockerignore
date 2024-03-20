@@ -1,0 +1,12 @@
+.github
+.idea
+.vscode
+docker-compose.yml
+dist
+
+.env
+.env.example
+
+/node_modules
+
+/tools/
