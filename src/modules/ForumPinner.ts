@@ -3,6 +3,7 @@ import { Module } from "../Module.js";
 
 import dayjs from "dayjs";
 import dayjsRelativeTime from "dayjs/plugin/relativeTime.js";
+import { DEBUG } from "../utils/vars.js";
 dayjs.extend(dayjsRelativeTime);
 
 export default class ForumPinner extends Module {
@@ -50,6 +51,7 @@ export default class ForumPinner extends Module {
     });
 
     this.bot.client.on("threadCreate", async (thread) => {
+      if (DEBUG) console.log(`Thread created: ${thread.id}  type: ${thread.type}`);
       if (thread.type !== ChannelType.PublicThread) return;
 
       try {
@@ -61,10 +63,17 @@ export default class ForumPinner extends Module {
   }
 
   private async pinPost(thread: ThreadChannel) {
+    if (DEBUG) console.log(`Looking for post to pin in thread ${thread.id}`);
+
     const messages = await thread.messages.fetch();
 
     const firstMessage = messages.first();
-    if (firstMessage?.pinned) return;
+    if (DEBUG) console.log(`First message: ${firstMessage?.id}`);
+
+    if (firstMessage?.pinned) {
+      if (DEBUG) console.log("First message already pinned");
+      return;
+    }
 
     return firstMessage?.pin();
   }
