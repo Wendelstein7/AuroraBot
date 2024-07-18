@@ -105,7 +105,9 @@ export default class ForumPinner extends Module {
     // fetchStarterMessage should work (the first message of a thread has the same ID as the thread itself), but fall
     // back to fetching all messages if it doesn't work for some reason
     const firstMessage = (await thread.fetchStarterMessage().catch(() => null))
-      ?? await thread.messages.fetch().then(m => m.first());
+      ?? await thread.messages.fetch().then(m => m
+        .sort((a, b) => a.createdTimestamp - b.createdTimestamp) // Sort by creation time ascending
+        .first());
 
     if (DEBUG) console.log(`First message: ${firstMessage?.id}`);
     if (!firstMessage) throw new Error("No messages found in thread!");
