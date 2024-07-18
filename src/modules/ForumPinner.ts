@@ -104,7 +104,7 @@ export default class ForumPinner extends Module {
 
     // fetchStarterMessage should work (the first message of a thread has the same ID as the thread itself), but fall
     // back to fetching all messages if it doesn't work for some reason
-    const firstMessage = (await thread.fetchStarterMessage())
+    const firstMessage = (await thread.fetchStarterMessage().catch(() => null))
       ?? await thread.messages.fetch().then(m => m.first());
 
     if (DEBUG) console.log(`First message: ${firstMessage?.id}`);
