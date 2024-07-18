@@ -1,9 +1,9 @@
-import { ChannelType, Events, SlashCommandBuilder, ThreadChannel } from "discord.js";
-import { Module } from "../Module.js";
-
 import dayjs from "dayjs";
 import dayjsRelativeTime from "dayjs/plugin/relativeTime.js";
-import { DEBUG } from "../utils/vars.js";
+import { ChannelType, Events, SlashCommandBuilder, ThreadChannel } from "discord.js";
+import { Module } from "../Module.js";
+import { DEBUG, UNPINNED_THREAD_CHECK_INTERVAL_MS } from "../utils/vars.js";
+
 dayjs.extend(dayjsRelativeTime);
 
 export default class ForumPinner extends Module {
@@ -69,20 +69,18 @@ export default class ForumPinner extends Module {
       }
     });
 
-    // Since a new forum thread's first message might be undefined(?!), re-check and pin the first message whenever a
-    // new message arrives in a forum thread too.
-    this.bot.client.on(Events.MessageCreate, async (msg) => {
-      if (msg.channel.type !== ChannelType.PublicThread) return;
-      const thread = msg.channel as ThreadChannel;
+    // Check for unpinned threads on startup, and every 5 minutes
+    if (UNPINNED_THREAD_CHECK_INTERVAL_MS > 0) {
+      this.bot.client.on(Events.ClientReady, async () => {
+        this.checkUnpinnedThreads()
+          .catch(err => console.error("Error checking for unpinned threads (on startup):", err));
 
-      if (DEBUG) console.log(`Thread new message: ${thread.id}  type: ${thread.type}  message: ${msg.id}`);
-
-      try {
-        await this.pinPost(thread);
-      } catch (e) {
-        console.error("Error pinning post:", e);
-      }
-    });
+        setInterval(() => {
+          this.checkUnpinnedThreads()
+            .catch(err => console.error("Error checking for unpinned threads (interval):", err));
+        }, UNPINNED_THREAD_CHECK_INTERVAL_MS).unref();
+      });
+    }
   }
 
   private async pinPost(thread: ThreadChannel, force = false) {
@@ -104,9 +102,11 @@ export default class ForumPinner extends Module {
       }
     }
 
-    const messages = await thread.messages.fetch();
+    // fetchStarterMessage should work (the first message of a thread has the same ID as the thread itself), but fall
+    // back to fetching all messages if it doesn't work for some reason
+    const firstMessage = (await thread.fetchStarterMessage())
+      ?? await thread.messages.fetch().then(m => m.first());
 
-    const firstMessage = messages.first();
     if (DEBUG) console.log(`First message: ${firstMessage?.id}`);
     if (!firstMessage) throw new Error("No messages found in thread!");
 
@@ -118,5 +118,27 @@ export default class ForumPinner extends Module {
 
     await firstMessage.pin();
     this.alreadyPinnedThreads.add(thread.id); // Only add to cache if pinning was successful
+  }
+
+  /** Checks all the forum channels for any unarchived threads with no pins */
+  private async checkUnpinnedThreads() {
+    const forumChannels = this.bot.client.channels.cache.filter(c => c.type === ChannelType.GuildForum);
+
+    for (const channel of forumChannels.values()) {
+      const { threads } = await channel.threads.fetch();
+
+      for (const thread of threads.values()) {
+        if (this.alreadyPinnedThreads.has(thread.id) || thread.archived || thread.lastPinTimestamp) {
+          continue; // Skip threads that already have a pin
+        }
+
+        if (DEBUG) console.log(`Found unpinned thread ${thread.id}`);
+        try {
+          await this.pinPost(thread);
+        } catch (e) {
+          console.error("Error pinning post:", e);
+        }
+      }
+    }
   }
 }
