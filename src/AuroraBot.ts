@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Interaction } from "discord.js";
+import { Client, Events, GatewayIntentBits, Interaction } from "discord.js";
 import {
   CommandHandler,
   handleIncomingAutocomplete,
@@ -32,8 +32,8 @@ export class AuroraBot {
     });
 
     // Global event handlers (modules can register their own event handlers)
-    this.client.on("ready", this.onReady.bind(this));
-    this.client.on("interactionCreate", this.onInteractionCreate.bind(this));
+    this.client.on(Events.ClientReady, this.onReady.bind(this));
+    this.client.on(Events.InteractionCreate, this.onInteractionCreate.bind(this));
   }
 
   async start(): Promise<void> {
