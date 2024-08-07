@@ -12,8 +12,8 @@ const rules: string[] = [
 ];
 
 export default class Rules extends Module {
-  name = "Ping";
-  description = "This module allows users to ping the bot and receive a reply.";
+  name = "Rules";
+  description = "This module allows users to request a specific rule by number for quick reference";
 
   async start() {
     this.bot.registerCommand({
