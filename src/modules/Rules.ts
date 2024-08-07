@@ -26,7 +26,7 @@ export default class Rules extends Module {
             .setDescription("Select a rule")
             .setRequired(true)
             .setMinValue(1)
-            .setMaxValue(7)
+            .setMaxValue(rules.length)
         ),
       async execute(interaction) {
         const rule = interaction.options.getInteger("rule");
