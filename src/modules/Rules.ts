@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import { Module } from "../Module.js";
+import { truncate } from "../utils/index.js";
 
 const rules: string[] = [
   "1. Treat everyone with respect. Absolutely no harassment, witch hunting, sexism, racism, or hate speech will be tolerated.",
@@ -19,18 +20,18 @@ export default class Rules extends Module {
     this.bot.registerCommand({
       data: new SlashCommandBuilder()
         .setName("rule")
-        .setDescription("Replies with the selected rule")
-        .addIntegerOption((option) =>
-          option
-            .setName("rule")
-            .setDescription("Select a rule")
-            .setRequired(true)
-            .setMinValue(1)
-            .setMaxValue(rules.length)
-        ),
+        .setDescription("Replies with the chosen rule")
+        .addIntegerOption(opt => opt
+          .setName("rule")
+          .setDescription("Select a rule")
+          .setRequired(true)
+          .setMinValue(1)
+          .setMaxValue(rules.length)
+          .setChoices(rules.map((rule, i) => ({ name: `${truncate(rule, 100)}`, value: i + 1 })))),
+
       async execute(interaction) {
         const rule = interaction.options.getInteger("rule");
-
+        if (!rule) throw new Error("Invalid rule number");
         await interaction.reply({ content: `Rule ${rules[rule - 1]}` });
       },
     });
