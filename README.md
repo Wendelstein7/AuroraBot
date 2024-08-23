@@ -98,7 +98,7 @@ accept your proposed changes.
 
 # Licence
 
-This repository and its contents are licenced under the simple and permissive [MIT Licence](LICENSE.md). By contributing
+This repository and its contents are licenced under the simple and permissive [MIT Licence](LICENCE.md). By contributing
 to this repository, you agree that your work will also be licenced under the MIT Licence.
 
 ![The AuroraBot logo](assets/Logo-full.png)
