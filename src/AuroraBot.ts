@@ -39,9 +39,6 @@ export class AuroraBot {
   async start(): Promise<void> {
     await this.initModules();
     await this.connect();
-
-    process.on("SIGINT", () => this.shutdown().catch(console.error));
-    process.on("SIGTERM", () => this.shutdown().catch(console.error));
   }
   
   private async initModules() {
@@ -106,8 +103,7 @@ export class AuroraBot {
     await this.client.login(DISCORD_BOT_TOKEN);
   }
 
-  private async shutdown() {
-    console.log("Stop signal received, shutting down...");
+  async shutdown() {
     this.stopping = true;
 
     console.log("Stopping modules...");

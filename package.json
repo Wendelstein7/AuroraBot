@@ -8,7 +8,7 @@
     "build:bot": "cross-env NODE_ENV=production && tsc -p tsconfig.json",
     "build": "pnpm clean && pnpm build:bot",
     "clean": "rimraf dist",
-    "dev": "cross-env NODE_ENV=development && tsx src/index.ts",
+    "dev": "cross-env NODE_ENV=development && tsx --import why-is-node-running/include.js src/index.ts",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "lint:codegen": "eslint --fix src/modules.ts || exit 0",
     "preinstall": "npx only-allow pnpm"

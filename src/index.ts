@@ -1,6 +1,5 @@
 import "dotenv/config";
 
-import whyIsNodeRunning from "why-is-node-running";
 import { AuroraBot } from "./AuroraBot.js";
 
 export const bot = new AuroraBot();
@@ -10,12 +9,12 @@ bot.start().catch(err => {
   console.error(err);
 });
 
-function debugShutdown() {
-  setTimeout(() => {
-    console.log("Still shutting down?");
-    whyIsNodeRunning();
-  }, 12500).unref();
+function shutdown() {
+  console.log("Stop signal received, shutting down...");
+  bot.shutdown()
+    .then(() => console.log("Shutdown complete"))
+    .catch(console.error);
 }
 
-process.on("SIGINT", debugShutdown);
-process.on("SIGTERM", debugShutdown);
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
