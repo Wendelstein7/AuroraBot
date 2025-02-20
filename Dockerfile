@@ -5,6 +5,7 @@ RUN apk add ca-certificates make g++
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+RUN npm i -g corepack@latest # https://github.com/pnpm/pnpm/issues/9029
 RUN corepack enable
 
 WORKDIR /app
