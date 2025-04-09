@@ -6,6 +6,7 @@ import Example from "./modules/Example.js";
 import ForumPinner from "./modules/ForumPinner.js";
 import Info from "./modules/Info.js";
 import Ping from "./modules/Ping.js";
+import PronounCleanup from "./modules/PronounCleanup.js";
 import Rules from "./modules/Rules.js";
 import System from "./modules/System.js";
 const modules = {
@@ -13,6 +14,7 @@ const modules = {
   ForumPinner,
   Info,
   Ping,
+  PronounCleanup,
   Rules,
   System,
 } as const satisfies Record<string, typeof Module>;

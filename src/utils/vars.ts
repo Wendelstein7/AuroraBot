@@ -5,4 +5,6 @@ export const DISCORD_GUILD_ID  = process.env.DISCORD_GUILD_ID as string | undefi
 
 export const UNPINNED_THREAD_CHECK_INTERVAL_MS = parseInt(process.env.UNPINNED_THREAD_CHECK_INTERVAL || "300000");
 
+export const PRONOUN_ROLE_IDS = (process.env.PRONOUN_ROLE_IDS || "").trim().split(",");
+
 export const DEBUG = process.env.NODE_ENV === "development";

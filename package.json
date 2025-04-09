@@ -8,7 +8,7 @@
     "build:bot": "cross-env NODE_ENV=production && tsc -p tsconfig.json",
     "build": "pnpm clean && pnpm build:bot",
     "clean": "rimraf dist",
-    "dev": "cross-env NODE_ENV=development && tsx --import why-is-node-running/include.js src/index.ts",
+    "dev": "cross-env NODE_ENV=development && tsx src/index.ts",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "lint:codegen": "eslint --fix src/modules.ts || exit 0",
     "preinstall": "npx only-allow pnpm"
@@ -55,5 +55,6 @@
   },
   "engines": {
     "node": ">=20.0.0"
-  }
+  },
+  "packageManager": "pnpm@9.0.5+sha512.a722575c18fd791f9ef71e387c6e16cc03c90d859b9b0998d0428ca0e3220828b32a96e6de73cea34edbc0f50824771b1a69c7ea36b86daa3b89c7e6d9a3d912"
 }
